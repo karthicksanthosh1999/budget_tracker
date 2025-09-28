@@ -38,7 +38,7 @@ model Transaction {
   description String
   date        DateTime
   userId      String
-  type        String   @default("icome")
+  type        String   @default("income ")
 
   category     String
   categoryIcon String
