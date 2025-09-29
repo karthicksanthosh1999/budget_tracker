@@ -31,7 +31,7 @@ import {
   CreateCategorySchemaType,
 } from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleOff, PlusSquare } from "lucide-react";
+import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EmojiPicker } from "frimousse";
@@ -59,9 +59,10 @@ export function MyEmojiPicker() {
 
 interface Props {
   type: TransactionType;
+  successCallback: (category: Category) => void;
 }
 
-const CreateCategoryDialog = ({ type }: Props) => {
+const CreateCategoryDialog = ({ type, successCallback }: Props) => {
   const [open, setOpen] = useState(false);
 
   const form = useForm<CreateCategorySchemaType>({
@@ -84,6 +85,8 @@ const CreateCategoryDialog = ({ type }: Props) => {
       toast.success(`Category ${data.name} created successfully 🎉`, {
         id: "create-category",
       });
+
+      successCallback(data);
 
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
@@ -108,13 +111,11 @@ const CreateCategoryDialog = ({ type }: Props) => {
   );
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant={"ghost"}
-          className="flex border-separate items-center 
-      justify-start rounded-none border-b px-3 py-2 text-muted-foreground
-      ">
+          className="flex border-separate items-center justify-start rounded-none border-b px-3 py-2 text-muted-foreground">
           <PlusSquare className="mr-2 h-4 w-4" />
           Create New
         </Button>
@@ -145,10 +146,10 @@ const CreateCategoryDialog = ({ type }: Props) => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue="" {...field} />
+                    <Input placeholder="Category" defaultValue="" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Transaction Description (optional)
+                    This is how your category will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -233,21 +234,20 @@ const CreateCategoryDialog = ({ type }: Props) => {
           </form>
         </Form>
         <DialogFooter>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant={"secondary"}
-                onClick={() => {
-                  form.reset();
-                }}>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-              Save
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant={"secondary"}
+              onClick={() => {
+                form.reset();
+              }}>
+              Cancel
             </Button>
-          </DialogFooter>
+          </DialogClose>
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+            {!isPending && "Create"}
+            {isPending && <Loader2 className="animate-spin" />}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
