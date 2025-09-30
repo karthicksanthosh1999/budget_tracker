@@ -15,7 +15,7 @@ import {
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormMessage } from "@/components/ui/form";
@@ -35,9 +35,12 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Cal_Sans } from "next/font/google";
-import { Calendar1Icon } from "lucide-react";
+import { Calendar1Icon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateTransaction } from "../_actions/transaction";
+import { toast } from "sonner";
+import { DateToUTCDate } from "@/lib/helper";
 
 interface Props {
   trigger: ReactNode;
@@ -45,6 +48,8 @@ interface Props {
 }
 
 function CreateTransactionDialog({ trigger, type }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+
   // FORM
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
@@ -61,8 +66,48 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     [form]
   );
 
+  const queryClient = useQueryClient();
+
+  // HOOK
+  const { mutate, isPending } = useMutation({
+    mutationFn: CreateTransaction,
+    onSuccess: () => {
+      // SUCCESS MESSAGE
+      toast.success("Transaction created successfully 🎉", {
+        id: "create-transaction",
+      });
+      // FORM RESET
+      form.reset({
+        type,
+        description: "",
+        amount: 0,
+        date: new Date(),
+        category: undefined,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
+
+      setIsOpen((preV) => !preV);
+    },
+  });
+
+  const onSubmit = useCallback(
+    (value: CreateTransactionSchemaType) => {
+      toast.loading("Creating transaction...", {
+        id: "create-transaction",
+      });
+      mutate({
+        ...value,
+        date: DateToUTCDate(value.date),
+      });
+    },
+    [mutate]
+  );
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -78,7 +123,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="description"
@@ -86,7 +131,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input defaultValue="" {...field} />
+                    <Input defaultValue="" type="text" {...field} />
                   </FormControl>
                   <FormDescription>
                     Transaction Description (optional)
@@ -101,7 +146,12 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input defaultValue={0} type="number" {...field} />
+                    <Input
+                      defaultValue={0}
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormDescription>
                     Transaction amount (required)
@@ -109,7 +159,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-            Transaction: {form.watch("category")}
             <div className="flex items-center justify-between gap-2">
               <FormField
                 control={form.control}
@@ -157,7 +206,10 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(value) => {
+                            if (!value) return;
+                            field.onChange(value);
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -168,6 +220,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 )}
               />
             </div>
+            Transaction: {form.watch("category")}
           </form>
         </Form>
         <DialogFooter>
