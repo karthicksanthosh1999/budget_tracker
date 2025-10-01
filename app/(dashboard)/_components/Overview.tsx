@@ -34,6 +34,11 @@ const Overview = ({ userSettings }: { userSettings: UserSettings }) => {
           />
         </div>
       </div>
+      <StateCards
+        userSettings={userSettings}
+        from={dateRange.from}
+        to={dateRange.to}
+      />
     </>
   );
 };
