@@ -105,7 +105,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     },
     [mutate]
   );
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>

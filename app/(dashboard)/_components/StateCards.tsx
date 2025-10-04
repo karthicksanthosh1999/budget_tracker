@@ -1,11 +1,13 @@
 "use client";
 import { GetBalanceStatusResponseType } from "@/app/api/stacks/balance/route";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
+import { Card } from "@/components/ui/card";
 import { UserSettings } from "@/lib/generated/prisma";
 import { DateToUTCDate, GetFormatterForCurrency } from "@/lib/helper";
 import { useQuery } from "@tanstack/react-query";
-import { TrendingUp } from "lucide-react";
-import React, { ReactNode, useMemo } from "react";
+import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import React, { ReactNode, useCallback, useMemo } from "react";
+import CounterUp from "react-countup";
 
 interface Props {
   from: Date;
@@ -18,9 +20,9 @@ const StateCards = ({ from, to, userSettings }: Props) => {
     queryKey: ["overview", "stats", from, to],
     queryFn: () =>
       fetch(
-        `/api/stats/balance?from=${DateToUTCDate(from)}&to=${DateToUTCDate(
+        `/api/stacks/balance?from=${DateToUTCDate(from)}&to=${DateToUTCDate(
           to
-        )}}`
+        )}`
       ).then((res) => res.json()),
   });
 
@@ -35,15 +37,44 @@ const StateCards = ({ from, to, userSettings }: Props) => {
 
   return (
     <div className="relative flex w-full flex-wrap gap-2 md:flex-nowrap">
-      <SkeletonWrapper isLoading={statsQuery.isFetched}>
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <StatCard
-          formatter={formater}
+          formatter={formatter}
           value={income}
           title="Income"
           icon={
             <TrendingUp
+              size={20}
               className="h-12 w-12 items-center rounded-lg p-2 text-emerald-500 
           bg-emerald-400/10"
+            />
+          }
+        />
+      </SkeletonWrapper>
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+        <StatCard
+          formatter={formatter}
+          value={expense}
+          title="expense"
+          icon={
+            <TrendingDown
+              size={20}
+              className="h-12 w-12 items-center rounded-lg p-2 text-red-500 
+          bg-red-400/10"
+            />
+          }
+        />
+      </SkeletonWrapper>
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+        <StatCard
+          formatter={formatter}
+          value={balance}
+          title="balance"
+          icon={
+            <Wallet
+              size={20}
+              className="h-12 w-12 items-center rounded-lg p-2 text-violet-500 
+          bg-violet-400/10"
             />
           }
         />
@@ -55,7 +86,7 @@ const StateCards = ({ from, to, userSettings }: Props) => {
 export default StateCards;
 
 function StatCard({
-  formater,
+  formatter,
   value,
   title,
   icon,
@@ -64,4 +95,28 @@ function StatCard({
   icon: ReactNode;
   title: String;
   value: number;
-}) {}
+}) {
+  const formatFn = useCallback(
+    (value: number) => {
+      return formatter.format(value);
+    },
+    [formatter]
+  );
+
+  return (
+    <Card className="flex flex-row h-24 w-full items-center gap-2 p-4">
+      {icon}
+      <div className="flex flex-col items-center gap-0">
+        <p className="text-muted-foreground">{title}</p>
+        <CounterUp
+          preserveValue
+          redraw={false}
+          end={value}
+          decimal="2"
+          formattingFn={formatFn}
+          className="text-2xl"
+        />
+      </div>
+    </Card>
+  );
+}

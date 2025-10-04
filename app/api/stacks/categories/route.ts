@@ -2,10 +2,10 @@ import prisma from "@/lib/prisma";
 import { OverviewQuerySchema } from "@/schema/overview";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { URL } from "url";
 
 export async function GET(request: Request) {
   const user = await currentUser();
+
   if (!user) {
     redirect("/sign-in");
   }
@@ -14,19 +14,13 @@ export async function GET(request: Request) {
 
   const from = searchParams.get("from");
   const to = searchParams.get("to");
-  console.log(from, to);
-  const queryParams = OverviewQuerySchema.safeParse({
-    from: from ? new Date(from) : null,
-    to: to ? new Date(to) : null,
-  });
 
+  const queryParams = OverviewQuerySchema.safeParse({ from, to });
   if (!queryParams.success) {
-    return Response.json(queryParams.error.message, {
-      status: 400,
-    });
+    throw new Error(queryParams.error.message);
   }
 
-  const stats = await getBalanceStats(
+  const stats = await getCategoriesStats(
     user.id,
     queryParams.data.from,
     queryParams.data.to
@@ -36,12 +30,12 @@ export async function GET(request: Request) {
 }
 
 export type GetBalanceStatusResponseType = Awaited<
-  ReturnType<typeof getBalanceStats>
+  ReturnType<typeof getCategoriesStats>
 >;
 
-async function getBalanceStats(userId: string, from: Date, to: Date) {
-  const totals = await prisma.transaction.groupBy({
-    by: ["type"],
+async function getCategoriesStats(userId: string, from: Date, to: Date) {
+  const stats = await prisma.transaction.groupBy({
+    by: ["type", "category", "categoryIcon"],
     where: {
       userId,
       date: {
@@ -52,9 +46,12 @@ async function getBalanceStats(userId: string, from: Date, to: Date) {
     _sum: {
       amount: true,
     },
+    orderBy: {
+      _sum: {
+        amount: "desc",
+      },
+    },
   });
-  return {
-    expense: totals.find((t) => t.type === "expense")?._sum.amount || 0,
-    income: totals.find((t) => t.type === "income")?._sum.amount || 0,
-  };
+
+  return stats;
 }
