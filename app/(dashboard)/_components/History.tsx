@@ -153,7 +153,7 @@ const History = ({ userSettings }: { userSettings: UserSettings }) => {
                   <Tooltip
                     cursor={{ opacity: 0.1 }}
                     content={(props) => (
-                      <CustomeToolTip formatter={formatter} {...props} />
+                      <CustomToolTip formatter={formatter} {...props} />
                     )}
                   />
                 </BarChart>
@@ -176,7 +176,7 @@ const History = ({ userSettings }: { userSettings: UserSettings }) => {
 
 export default History;
 
-function CustomeToolTip({ active, payload, formatter }: any) {
+function CustomToolTip({ active, payload, formatter }: any) {
   if (!active || !payload || payload.length === 0) return null;
 
   const data = payload[0].payload;

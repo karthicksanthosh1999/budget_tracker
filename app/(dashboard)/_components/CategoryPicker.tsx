@@ -56,7 +56,7 @@ const CategoryPicker = ({ type, onChange }: Props) => {
   );
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -71,7 +71,7 @@ const CategoryPicker = ({ type, onChange }: Props) => {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="w-[200px] p-0">
         <Command onSubmit={(e) => e.preventDefault()}>
           <CommandInput placeholder="Search Category..." />
           <CreateCategoryDialog type={type} successCallback={successCallback} />

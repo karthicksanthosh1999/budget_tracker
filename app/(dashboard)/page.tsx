@@ -43,6 +43,7 @@ const Page = async () => {
             <CreateTransactionDialog
               trigger={
                 <Button
+                  variant={"outline"}
                   className="border-emerald-500 bg-emerald-950 text-white hover:bg-emerald-700
               hover:text-white">
                   💸New Expense

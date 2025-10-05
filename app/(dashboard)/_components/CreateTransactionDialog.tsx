@@ -54,7 +54,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
-      type: "income",
+      type,
       date: new Date(),
     },
   });
@@ -119,6 +119,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
               )}>
               {type}
             </span>
+            transaction
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -130,7 +131,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input defaultValue="" type="text" {...field} />
+                    <Input defaultValue={""} type="text" {...field} />
                   </FormControl>
                   <FormDescription>
                     Transaction Description (optional)
@@ -158,6 +159,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
+            Transaction: {form.watch("category")}
             <div className="flex items-center justify-between gap-2">
               <FormField
                 control={form.control}
@@ -219,7 +221,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 )}
               />
             </div>
-            Transaction: {form.watch("category")}
           </form>
         </Form>
         <DialogFooter>
