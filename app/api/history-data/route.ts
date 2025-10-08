@@ -106,8 +106,8 @@ async function getYearHistoryData(userId: string, year: number) {
       expense,
       income,
     });
-    return history;
   }
+  return history;
 }
 
 async function getMonthHistoryData(
@@ -156,7 +156,6 @@ async function getMonthHistoryData(
       month,
       day: i,
     });
-
-    return history;
   }
+  return history;
 }

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserSettings } from "@/lib/generated/prisma";
 import { GetFormatterForCurrency } from "@/lib/helper";
 import { Period, TimeFrame } from "@/lib/types";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import HistoryPeriodSelector from "./HistoryPeriodSelector";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
@@ -222,21 +222,27 @@ function ToolTipRow({
   value: number;
   formatter: Intl.NumberFormat;
 }) {
+  const formatterFu = useCallback(
+    (value: number) => {
+      return formatter.format(value);
+    },
+    [formatter]
+  );
+
   return (
     <div className="flex items-center gap-2">
-      <div className={cn("h-4 w-4 rounded-full", bgColor)}>
-        <div className="flex w-full justify-between">
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <div className={cn("text-sm font-bold", textColor)}></div>
-          <CountUp
-            duration={0.5}
-            preserveValue
-            end={value}
-            decimal="0"
-            formattingFn={(value) => formatter.format(value)}
-            className="text-sm"
-          />
-        </div>
+      <div className={cn("h-4 w-4 rounded-full", bgColor)} />
+      <div className="flex w-full justify-between">
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <div className={cn("text-sm font-bold", textColor)}></div>
+        <CountUp
+          duration={0.5}
+          preserveValue
+          end={value}
+          decimal="0"
+          formattingFn={formatterFu}
+          className="text-sm"
+        />
       </div>
     </div>
   );
