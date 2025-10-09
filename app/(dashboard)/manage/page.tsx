@@ -12,11 +12,12 @@ import { TransactionType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { PlusSquare, TrashIcon, TrendingDown } from "lucide-react";
 import React from "react";
-import CreateCategoryDialog from "../(dashboard)/_components/CreateCategoryDialog";
+import CreateCategoryDialog from "../_components/CreateCategoryDialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Category } from "@/lib/generated/prisma";
+import DeleteCategoryDialog from "../_components/DeleteCategoryDialog";
 
 const page = () => {
   return (
@@ -63,7 +64,7 @@ function CategoryList({ type }: { type: TransactionType }) {
 
   return (
     <>
-      <SkeletonWrapper isLoading={categoryQuery.isFetching}>
+      <SkeletonWrapper isLoading={categoryQuery.isLoading}>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between gap-2">
@@ -140,13 +141,18 @@ function CategoryCard({ category }: { category: Category }) {
         <span className="text-3xl">{category.icon}</span>
         <span>{category.name}</span>
       </div>
-      <Button
-        className="flex w-full border-separate items-center gap-2 rounded-t-none
-      text-muted-foreground hover:bg-red-500/20"
-        variant={"secondary"}>
-        <TrashIcon className="h-4 w-4" />
-        Remove
-      </Button>
+      <DeleteCategoryDialog
+        category={category}
+        trigger={
+          <Button
+            className="flex w-full border-separate items-center gap-2 rounded-t-none
+            text-muted-foreground hover:bg-red-500/20"
+            variant={"secondary"}>
+            <TrashIcon className="h-4 w-4" />
+            Remove
+          </Button>
+        }
+      />
     </div>
   );
 }
