@@ -13,8 +13,8 @@ const TransactionsPage = () => {
   });
   return (
     <>
-      <div className="border-b bg-card">
-        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
+      <div className="border-b bg-card ">
+        <div className="container mx-auto flex flex-wrap items-center justify-between gap-6 py-8">
           <div>
             <p className="text-3xl font-bold">Transactions History</p>
           </div>
@@ -35,7 +35,7 @@ const TransactionsPage = () => {
           />
         </div>
       </div>
-      <div className="container">
+      <div className="container mx-auto">
         <TransactionTable from={dateRange.from} to={dateRange.to} />
       </div>
     </>

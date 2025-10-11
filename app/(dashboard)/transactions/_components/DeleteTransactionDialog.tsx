@@ -1,8 +1,6 @@
 "use client";
-import { Category } from "@/lib/generated/prisma";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode } from "react";
-import { DeleteCategory } from "../_actions/category";
+import React from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -12,59 +10,55 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTrigger,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
-import { TransactionType } from "@/lib/types";
+import { DeleteTransaction } from "../_actions/deleteTransaction";
 
-const DeleteCategoryDialog = ({
-  trigger,
-  category,
+const DeleteTransactionDialog = ({
+  transactionId,
+  open,
+  setOpen,
 }: {
-  trigger: ReactNode;
-  category: Category;
+  transactionId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) => {
-  const categoryIdentifier = `${category.name}-${category.type}`;
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
-    mutationFn: DeleteCategory,
+    mutationFn: DeleteTransaction,
     onSuccess: async () => {
-      toast.success("Category deleted successfully", {
-        id: categoryIdentifier,
+      toast.success("Transaction deleted successfully", {
+        id: transactionId,
       });
       await queryClient.invalidateQueries({
-        queryKey: ["categories"],
+        queryKey: ["transactions"],
       });
     },
     onError: async () => {
       toast.error("Something went wrong", {
-        id: categoryIdentifier,
+        id: transactionId,
       });
     },
   });
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone, This will permanently delete your
-            transaction
+            category
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              toast.loading("Deleting category...", {
-                id: categoryIdentifier,
+              toast.loading("Deleting transaction...", {
+                id: transactionId,
               });
-              deleteMutation.mutate({
-                name: category.name,
-                type: category.type as TransactionType,
-              });
+              deleteMutation.mutate(transactionId);
             }}>
             Continue
           </AlertDialogAction>
@@ -74,4 +68,4 @@ const DeleteCategoryDialog = ({
   );
 };
 
-export default DeleteCategoryDialog;
+export default DeleteTransactionDialog;

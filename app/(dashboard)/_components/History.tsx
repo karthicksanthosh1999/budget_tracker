@@ -43,7 +43,6 @@ const History = ({ userSettings }: { userSettings: UserSettings }) => {
 
   const dataAvailable =
     historyDataQuery.data && historyDataQuery.data.length > 0;
-  console.log(dataAvailable);
   return (
     <div className="container">
       <h2 className="mt-12 text-3xl font-bold">History</h2>
@@ -159,7 +158,7 @@ const History = ({ userSettings }: { userSettings: UserSettings }) => {
                 </BarChart>
               </ResponsiveContainer>
             )}
-            {dataAvailable && (
+            {dataAvailable ?? (
               <Card className="flex h-[300px] flex-col items-center justify-center bg-background">
                 No data for the selected period
                 <p className="text-sm text-muted-foreground">
