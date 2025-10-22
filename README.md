@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💰 Budget Tracker
 
-## Getting Started
+A **modern, responsive Budget Tracker** built with **Next.js 15**, **Prisma**, and **Tailwind CSS**.  
+Manage your **expenses, incomes, and budgets** efficiently — with secure authentication and a sleek UI powered by **shadcn/ui**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🖼️ Preview
+![App Screenshot](./public/preview.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*(Replace this with a screenshot of your app — recommended size: 1200x600px)*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧩 Tech Stack
 
-## Learn More
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-React_Query-FF4154?style=for-the-badge&logo=react-query)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.0-38B2AC?style=for-the-badge&logo=tailwind-css)
+![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Components-111111?style=for-the-badge)
+![NextAuth.js](https://img.shields.io/badge/NextAuth.js-Auth-0F172A?style=for-the-badge&logo=auth0)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+✅ **User Authentication** using NextAuth.js  
+✅ **Expense & Income Management** with Prisma ORM  
+✅ **Real-Time Data Sync** using TanStack Query  
+✅ **Dark / Light Mode** with shadcn UI  
+✅ **Fully Responsive Design** with Tailwind CSS  
+✅ **Secure API Routes** with Middleware Protection  
+✅ **Modern Dashboard Layout** built with Next.js App Router  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Project Structure
