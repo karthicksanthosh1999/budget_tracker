@@ -35,11 +35,7 @@ import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 import React, { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EmojiPicker } from "frimousse";
-import {
-  useMutation,
-  useMutationState,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateCategory } from "../_actions/category";
 import { Category } from "@/lib/generated/prisma";
 import { toast } from "sonner";
